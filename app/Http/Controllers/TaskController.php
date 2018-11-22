@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
@@ -12,10 +13,16 @@ class TaskController extends Controller
      * Display a listing of the resource.
      *
      * @param $request Request
+     * @param $task Task
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Task $task)
     {
+        Validator::make($request->all(), [
+            'title' => 'string',
+            'assignee_id' => 'int',
+        ])->validate();
+
         $search = array_filter([
             'title' => $request->get('title'),
         ]);
@@ -25,11 +32,7 @@ class TaskController extends Controller
         ]);
 
         return view('tasks', [
-            'tasks' => Task::withAll()->where(function($query) use ($search) {
-                foreach ($search as $key => $value) {
-                    $query->where($key, 'like', '%' . $value . '%');
-                }
-            })->where($filter)->get()
+            'tasks' => $task->getTasksWithAllData($filter, $search)
         ]);
     }
 
@@ -47,11 +50,14 @@ class TaskController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  StoreTaskRequest $request
+     * @param  $task Task
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request, Task $task)
     {
-        Task::create($request->validated());
+        $request->validateResolved();
+
+        $task->store($request->validated());
 
         return redirect()
             ->back('201')

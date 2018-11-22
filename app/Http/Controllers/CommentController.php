@@ -13,11 +13,12 @@ class CommentController extends Controller
      * Display a listing of the resource.
      *
      * @param $task Task
+     * @param $comment Comment
      * @return \Illuminate\Http\Response
      */
-    public function index(Task $task){
+    public function index(Task $task, Comment $comment){
         return response()->json([
-            'comments' => Comment::where('task_id', $task->id)->get()
+            'comments' => $comment->getCommentsByTask($task)
         ]);
     }
 
@@ -37,14 +38,17 @@ class CommentController extends Controller
      *
      * @param $task Task
      * @param $request StoreCommentRequest
+     * @param $comment Comment
      * @return \Illuminate\Http\Response
      */
-    public function store(Task $task, StoreCommentRequest $request) {
-        Comment::create([
-            'comment' => $request->validated()['comment'],
-            'task_id' => $task->id,
-            'user_id' => $request->user()->id
-        ]);
+    public function store(Task $task, StoreCommentRequest $request, Comment $comment) {
+
+        $comment->store(
+            $request->validated()['comment'],
+            $task,
+            $request->user()
+        );
+
         return redirect()
             ->back(201)
             ->with('success', 'Comment added');
