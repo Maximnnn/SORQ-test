@@ -28,15 +28,12 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-   /* public function task() {
-        return $this->belongsTo(Task::class);
-    }*/
-
-    public function comment() {
+    public function comments() {
         return $this->hasMany(Comment::class);
     }
 
-    public function tasks() {
-        return $this->hasMany(Task::class);
+
+    public function assignee() {
+        return $this->hasMany(Task::class, 'assignee_id');
     }
 }

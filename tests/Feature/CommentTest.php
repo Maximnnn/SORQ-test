@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Comment;
 use App\Task;
 use App\User;
 use Tests\TestCase;
@@ -15,7 +16,7 @@ class CommentTest extends TestCase
      *
      * @return void
      */
-    public function testStore()
+    public function testRouteStore()
     {
         $user = factory(User::class)->create();
 
@@ -26,6 +27,23 @@ class CommentTest extends TestCase
             ]);
 
         $response->assertStatus(201); //todo why returns 302
+    }
+
+    public function testStore() {
+
+        $user = factory(User::class)->create();
+
+        $task = Task::create([
+            'title' => 'title',
+            'description' => 'description'
+        ]);
+
+        $comment = (new Comment())->store('test comment', $task, $user);
+
+        $this->assertEquals($comment->user_id, $user->id);
+        $this->assertEquals($comment->comment, 'test comment');
+        $this->assertEquals($comment->task_id, $task->id);
+
     }
 
     public function testGet()

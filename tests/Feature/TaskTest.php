@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Task;
 use App\User;
 use Tests\TestCase;
 
 class TaskTest extends TestCase
 {
 
-    public function testCreate()
+    public function testRouteStore()
     {
         $user = factory(User::class)->create();
 
@@ -20,6 +21,17 @@ class TaskTest extends TestCase
             ]);
 
         $response->assertStatus(201); //todo why returns 302
+    }
+
+    public function testStore() {
+
+        $task = (new Task)->store([
+            'title' => 'title',
+            'description' => 'description'
+        ]);
+
+        $this->assertEquals($task->title, 'title');
+        $this->assertEquals($task->description, 'description');
     }
 
     public function testGet()

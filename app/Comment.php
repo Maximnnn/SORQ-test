@@ -18,7 +18,14 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-
+    /**
+     * To store Comment
+     *
+     * @param $comment string
+     * @param $task Task
+     * @param $user User
+     * @return Comment
+     */
     public function store($comment, Task $task, User $user) {
         return self::create([
             'comment' => $comment,
@@ -27,6 +34,13 @@ class Comment extends Model
         ]);
     }
 
+
+    /**
+     * return Comment filtered by task
+     *
+     * @param $task Task
+     * @return Comment
+     */
     public function getCommentsByTask(Task $task) {
         return Comment::where('task_id', $task->id)->get();
     }

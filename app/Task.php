@@ -11,7 +11,18 @@ class Task extends Model
 
     protected $fillable = ['title', 'description', 'assignee_id'];
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function assignee() {
+        return $this->belongsTo(User::class, 'assignee_id', 'id');
+    }
+
+
     /**
+     * returns Tasks[] with assigned users and comments[] with users
+     *
      * @param $filter array
      * @param $search array
      * @return Collection
@@ -32,20 +43,12 @@ class Task extends Model
                 ->get();
     }
 
-    public function comments() {
-        return $this->hasMany(Comment::class);
-    }
 
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-
-    public function assignee() {
-        return $this->belongsTo(User::class);
-    }
-
-
-    public function store($task) {
+    /**
+     * @param $task array
+     * @return Task
+     */
+    public function store(array $task) {
         return self::create($task);
     }
 
