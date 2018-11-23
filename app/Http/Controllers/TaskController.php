@@ -31,8 +31,13 @@ class TaskController extends Controller
             'assignee_id' => $request->get('assignee_id')
         ]);
 
+        $tasks = $task->getTasksWithAllData($filter, $search);
+
+        if ($request->wantsJson())
+            return response()->json($tasks);
+
         return view('tasks', [
-            'tasks' => $task->getTasksWithAllData($filter, $search)
+            'tasks' => $tasks
         ]);
     }
 
