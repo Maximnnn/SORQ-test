@@ -49,6 +49,10 @@ class CommentController extends Controller
             $request->user()
         );
 
+        if ($request->wantsJson()) return response()->json([
+            'success' => 'Comment added'
+        ], 201);
+
         return redirect()
             ->back(201)
             ->with('success', 'Comment added');
