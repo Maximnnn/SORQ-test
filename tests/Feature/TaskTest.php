@@ -15,12 +15,12 @@ class TaskTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->post('/tasks',[
-                'title' => rand(1,10000),
-                'description' => rand(1,10000)
-            ]);
-
-        $response->assertStatus(201); //todo why returns 302
+            ->json('POST','/tasks',[
+                'title' => str_random(20),
+                'description' => str_random(100)
+            ])
+            ->assertStatus(201)
+            ->assertJson(['success' => 'Task created']);
     }
 
     public function testStore() {

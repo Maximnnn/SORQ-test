@@ -64,9 +64,10 @@ class TaskController extends Controller
 
         $task->store($request->validated());
 
-        if ($request->wantsJson()) return response()->json([
-            'success' => 'Task created'
-        ],201);
+        if ($request->wantsJson())
+            return response()->json([
+                'success' => 'Task created'
+            ], 201);
 
         return redirect()
             ->back('201')

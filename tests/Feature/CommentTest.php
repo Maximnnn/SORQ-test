@@ -22,11 +22,13 @@ class CommentTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->post('/tasks/1/comments',[
-                'comment' => rand(1,10000),
+            ->json('POST', '/tasks/1/comments', [
+                'comment' => str_random(100)
+            ])
+            ->assertStatus(201)
+            ->asserJson([
+                'success' => 'Comment added'
             ]);
-
-        $response->assertStatus(201); //todo why returns 302
     }
 
     public function testStore() {
@@ -72,7 +74,7 @@ class CommentTest extends TestCase
     public function testAccess() {
         $response = $this
             ->post('/tasks/1/comments',[
-                'comment' => rand(1,10000),
+                'comment' => str_random(100),
             ]);
 
         $response->assertStatus(403);       //todo why returns 302
